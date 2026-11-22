@@ -117,18 +117,23 @@ const deleteArtista = async (req, res) => {
  * @param {import('express').Response} res
  */
 const getAlbumesByArtista = async (req, res) => {
-    const result = await query(
-        `SELECT
-            albumes.id,
-            albumes.nombre,
-            artistas.nombre AS nombre_artista
-        FROM albumes
-            JOIN artistas ON albumes.artista = artistas.id
-        WHERE albumes.artista = $1`,
-        [req.params.id]
-    );
+    try {
+        const result = await query(
+            `SELECT
+                albumes.id,
+                albumes.nombre,
+                artistas.nombre AS nombre_artista
+            FROM albumes
+                JOIN artistas ON albumes.artista = artistas.id
+            WHERE albumes.artista = $1
+            ORDER BY albumes.id ASC`,
+            [req.params.id]
+        );
 
-    res.json(result.rows);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 /**
@@ -137,22 +142,27 @@ const getAlbumesByArtista = async (req, res) => {
  * @param {import('express').Response} res
  */
 const getCancionesByArtista = async (req, res) => {
-    const result = await query(
-        `SELECT
-            canciones.id,
-            canciones.nombre,
-            canciones.duracion,
-            canciones.reproducciones,
-            artistas.nombre AS nombre_artista,
-            albumes.nombre AS nombre_album
-        FROM canciones
-            JOIN albumes ON albumes.id = canciones.album
-            JOIN artistas ON albumes.artista = artistas.id
-        WHERE artistas.id = $1`,
-        [req.params.id]
-    );
+    try {
+        const result = await query(
+            `SELECT
+                canciones.id,
+                canciones.nombre,
+                canciones.duracion,
+                canciones.reproducciones,
+                artistas.nombre AS nombre_artista,
+                albumes.nombre AS nombre_album
+            FROM canciones
+                JOIN albumes ON albumes.id = canciones.album
+                JOIN artistas ON albumes.artista = artistas.id
+            WHERE artistas.id = $1
+            ORDER BY canciones.id ASC`,
+            [req.params.id]
+        );
 
-    res.json(result.rows);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 const artistas = {

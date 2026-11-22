@@ -89,7 +89,7 @@ const createAlbum = async (req, res) => {
         }
     */
   const { nombre, artista } = req.body;
-  if (!nombre || artista === undefined) {
+  if (!nombre || !artista) {
     return res.status(400).json({ error: "Los campos nombre y artista son obligatorios" });
   }
   try {
@@ -120,7 +120,7 @@ const updateAlbum = async (req, res) => {
     */
   const { id } = req.params;
   const { nombre, artista } = req.body;
-  if (!nombre || artista === undefined) {
+  if (!nombre || !artista) {
     return res.status(400).json({ error: "Los campos nombre y artista son obligatorios" });
   }
   try {
@@ -158,7 +158,7 @@ const deleteAlbum = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Álbum no encontrado" });
     }
-    res.json({ message: "Álbum eliminado correctamente", album: result.rows[0] });
+    res.sendStatus(204);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
